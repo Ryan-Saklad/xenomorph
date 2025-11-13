@@ -1,0 +1,14 @@
+concurrency: 6
+default_timeout: 20
+
+extends:
+  - example:python
+  - example:security
+
+PostToolUse:
+  # Local overrides or additions can be declared alongside extends
+  tasks:
+    - ref: xenohooks.bash.hygiene
+      id: bash-hygiene
+      tools: [Bash]
+      timeout: 2

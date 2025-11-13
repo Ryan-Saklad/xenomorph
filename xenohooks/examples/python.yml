@@ -1,0 +1,38 @@
+concurrency: 6
+default_timeout: 20
+
+PostToolUse:
+  tasks:
+    - ref: xenohooks.python.config_syntax
+      id: config-syntax
+      tools: [Write, Edit]
+      file_types: [json, yaml, yml, toml]
+      timeout: 5
+    - ref: xenohooks.python.ruff
+      id: ruff
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 20
+    - ref: xenohooks.python.mypy
+      id: mypy
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 60
+    - ref: xenohooks.python.pydocstyle
+      id: pydocstyle
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 15
+    - ref: xenohooks.python.bandit
+      id: bandit
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 30
+    - ref: xenohooks.python.secrets
+      id: secrets
+      tools: [Write, Edit]
+      timeout: 30
+    - ref: xenohooks.builtin.packs.python.check_pip_audit
+      id: pip-audit
+      tools: [Write, Edit]
+      timeout: 60

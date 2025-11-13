@@ -1,0 +1,81 @@
+[project]
+name = "xenomorph"
+version = "1.0.0"
+description = "Hooks runner and task framework for Claude Code"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "PyYAML>=6",
+  "mcp[cli]>=1.2.0",
+  "tomli; python_version < '3.11'",
+]
+authors = [
+  { name = "Xenomorph Contributors" }
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Build Tools",
+]
+license = { file = "LICENSE" }
+[project.urls]
+Homepage = "https://github.com/Ryan-Saklad/xenomorph"
+Repository = "https://github.com/Ryan-Saklad/xenomorph"
+
+[project.scripts]
+xenohooks = "xenohooks.router:main"
+xenomcps = "xenomcps.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["xenohooks", "xenomcps"]
+include = [
+  "xenohooks/examples/*.yml",
+  "LICENSE",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "xenohooks",
+  "xenomcps",
+  "xenohooks/examples/*.yml",
+  "README.md",
+  "pyproject.toml",
+  "LICENSE",
+]
+[project.entry-points."xenohooks.tasks"]
+# Bash
+"xenohooks.bash.hygiene" = "xenohooks.builtin.packs.bash.check_bash_tools:run"
+"xenohooks.bash.enforce_uv" = "xenohooks.builtin.packs.bash.enforce_uv:run"
+# Python
+"xenohooks.python.ruff" = "xenohooks.builtin.packs.python.check_ruff:run"
+"xenohooks.python.mypy" = "xenohooks.builtin.packs.python.check_mypy:run"
+"xenohooks.python.pydocstyle" = "xenohooks.builtin.packs.python.check_pydocstyle:run"
+"xenohooks.python.bandit" = "xenohooks.builtin.packs.python.check_bandit:run"
+"xenohooks.python.secrets" = "xenohooks.builtin.packs.python.check_secrets:run"
+"xenohooks.python.config_syntax" = "xenohooks.builtin.packs.python.check_config_syntax:run"
+# Frontend
+"xenohooks.frontend.stylelint" = "xenohooks.builtin.packs.frontend.check_stylelint:run"
+"xenohooks.frontend.biome" = "xenohooks.builtin.packs.frontend.check_biome:run"
+"xenohooks.frontend.vitest" = "xenohooks.builtin.packs.frontend.test_vitest:run"
+"xenohooks.frontend.design_tokens" = "xenohooks.builtin.packs.frontend.check_design_tokens:run"
+# ReScript
+"xenohooks.rescript.compile" = "xenohooks.builtin.packs.rescript.check_rescript_compile:run"
+"xenohooks.rescript.antipatterns" = "xenohooks.builtin.packs.rescript.check_rescript_antipatterns:run"
+"xenohooks.rescript.autofix" = "xenohooks.builtin.packs.rescript.autofix_rescript:run"
+# Docker
+"xenohooks.docker.dockerfile" = "xenohooks.builtin.packs.docker.check_dockerfile:run"
+# VCS / Quality / Notify
+"xenohooks.vcs.protect_branch" = "xenohooks.builtin.packs.vcs.protect_branch:run"
+"xenohooks.vcs.merge_conflicts" = "xenohooks.builtin.packs.vcs.check_merge_conflicts:run"
+"xenohooks.quality.debug_statements" = "xenohooks.builtin.packs.quality.check_debug_statements:run"
+"xenohooks.notify.chime" = "xenohooks.builtin.packs.notify.play_sound:run"

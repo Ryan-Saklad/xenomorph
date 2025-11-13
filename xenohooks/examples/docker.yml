@@ -1,0 +1,10 @@
+concurrency: 6
+default_timeout: 10
+
+PostToolUse:
+  tasks:
+    - ref: xenohooks.docker.dockerfile
+      id: dockerfile
+      tools: [Bash, Write, Edit]
+      file_types: [dockerfile, dockerfile.prod, dockerfile.dev, dockerfile.staging, dockerfile.test]
+      timeout: 10

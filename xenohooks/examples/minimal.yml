@@ -1,0 +1,15 @@
+concurrency: 6
+default_timeout: 5
+
+PostToolUse:
+  tasks:
+    - ref: xenohooks.bash.hygiene
+      id: bash-hygiene
+      tools: [Bash]
+      timeout: 2
+
+Notification:
+  tasks:
+    - ref: xenohooks.notify.chime
+      id: notify-chime
+      timeout: 2

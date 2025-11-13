@@ -1,0 +1,149 @@
+concurrency: 6
+default_timeout: 20
+
+# Example of policy-based blocking. Tasks remain non-blocking by default,
+# but the router will block when actions match these severity/category rules.
+policy:
+  missing_tool_is_warning: true
+  treat_stderr_only_as_warning: true
+  block_on:
+    - security:error   # Bandit, secrets, etc.
+    - test:error       # Vitest failures
+    - lint:error       # Stylelint and other lint-classified errors
+
+PreToolUse:
+  tasks:
+    - ref: xenohooks.bash.enforce_uv
+      id: enforce-uv
+      tools: [Bash]
+      timeout: 2
+    - ref: xenohooks.vcs.protect_branch
+      id: protect-branch
+      tools: [Bash]
+      timeout: 2
+
+PostToolUse:
+  tasks:
+    # Bash hygiene
+    - ref: xenohooks.bash.hygiene
+      id: bash-hygiene
+      tools: [Bash]
+      timeout: 2
+
+    # Python config syntax / linters / security
+    - ref: xenohooks.python.config_syntax
+      id: python-config-syntax
+      tools: [Write, Edit]
+      file_types: [json, yaml, yml, toml]
+      timeout: 10
+    - ref: xenohooks.python.ruff
+      id: python-ruff
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 30
+    - ref: xenohooks.python.mypy
+      id: python-mypy
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 60
+    - ref: xenohooks.python.pydocstyle
+      id: python-pydocstyle
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 20
+    - ref: xenohooks.python.bandit
+      id: python-bandit
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 40
+    - ref: xenohooks.python.secrets
+      id: python-secrets
+      tools: [Write, Edit]
+      timeout: 30
+
+    # Frontend linting and tests
+    - ref: xenohooks.frontend.stylelint
+      id: frontend-stylelint
+      tools: [Write, Edit]
+      file_types: [css, scss, sass]
+      timeout: 20
+    - ref: xenohooks.frontend.biome
+      id: frontend-biome
+      tools: [Write, Edit]
+      file_types: [js, mjs, json, ts, tsx]
+      timeout: 20
+    - ref: xenohooks.frontend.vitest
+      id: frontend-vitest
+      tools: [Write, Edit]
+      file_types: [js, mjs, ts, tsx, res]
+      timeout: 60
+
+    # Design tokens: Disabled by default during edits (refactoring suggestions, not actionable errors)
+    # Uncomment to enable, or run manually: xenohooks --config example:frontend < payload.json
+    # - ref: xenohooks.frontend.design_tokens
+    #   id: frontend-design-tokens
+    #   tools: [Write, Edit]
+    #   file_types: [css, scss, sass, res, resi]
+    #   timeout: 10
+
+    # ReScript compile, autofix, antipatterns
+    - ref: xenohooks.rescript.compile
+      id: rescript-compile
+      tools: [Write, Edit]
+      file_types: [res, resi]
+      timeout: 45
+    - ref: xenohooks.rescript.autofix
+      id: rescript-autofix
+      tools: [Write, Edit]
+      file_types: [res, resi]
+      timeout: 60
+    - ref: xenohooks.rescript.antipatterns
+      id: rescript-antipatterns
+      tools: [Write, Edit]
+      file_types: [res, resi]
+      timeout: 15
+
+    # Dockerfile checks
+    - ref: xenohooks.docker.dockerfile
+      id: dockerfile
+      tools: [Write, Edit]
+      file_types: [dockerfile, dockerfile.prod, dockerfile.dev, dockerfile.staging, dockerfile.test]
+      timeout: 20
+
+    # VCS & quality checks
+    - ref: xenohooks.vcs.merge_conflicts
+      id: vcs-merge-conflicts
+      tools: [Write, Edit]
+      timeout: 10
+    - ref: xenohooks.quality.debug_statements
+      id: quality-debug-statements
+      tools: [Write, Edit]
+      file_types: [py, js, mjs, ts, tsx, res, resi, css, scss, sass]
+      timeout: 15
+
+Notification:
+  tasks:
+    - ref: xenohooks.notify.chime
+      id: notify-chime
+      timeout: 2
+
+Stop:
+  tasks:
+    - ref: xenohooks.notify.chime
+      id: stop-chime
+      timeout: 2
+
+UserPromptSubmit:
+  tasks: []
+
+SubagentStop:
+  tasks: []
+
+PreCompact:
+  tasks: []
+
+SessionStart:
+  tasks: []
+
+SessionEnd:
+  tasks: []

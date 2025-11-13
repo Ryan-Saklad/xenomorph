@@ -1,0 +1,20 @@
+concurrency: 6
+default_timeout: 20
+
+PostToolUse:
+  tasks:
+    - ref: xenohooks.frontend.stylelint
+      id: stylelint
+      tools: [Write, Edit]
+      file_types: [css, scss, sass]
+      timeout: 10
+    - ref: xenohooks.frontend.biome
+      id: biome
+      tools: [Write, Edit]
+      file_types: [js, mjs, json, ts, tsx]
+      timeout: 10
+    - ref: xenohooks.frontend.vitest
+      id: vitest
+      tools: [Write, Edit]
+      file_types: [js, mjs, ts, tsx, res]
+      timeout: 45

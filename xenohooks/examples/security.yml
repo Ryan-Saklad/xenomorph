@@ -1,0 +1,18 @@
+concurrency: 6
+default_timeout: 20
+
+PostToolUse:
+  tasks:
+    - ref: xenohooks.python.secrets
+      id: secrets
+      tools: [Write, Edit]
+      timeout: 30
+    - ref: xenohooks.python.bandit
+      id: bandit
+      tools: [Write, Edit]
+      file_types: [py]
+      timeout: 30
+    - ref: xenohooks.builtin.packs.python.check_pip_audit
+      id: pip-audit
+      tools: [Write, Edit]
+      timeout: 60

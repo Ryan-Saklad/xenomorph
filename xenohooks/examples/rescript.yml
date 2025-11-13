@@ -1,0 +1,20 @@
+concurrency: 6
+default_timeout: 30
+
+PostToolUse:
+  tasks:
+    - ref: xenohooks.rescript.compile
+      id: rescript-compile
+      tools: [Bash]
+      file_types: [res, resi]
+      timeout: 35
+    - ref: xenohooks.rescript.antipatterns
+      id: rescript-antipatterns
+      tools: [Write, Edit]
+      file_types: [res, resi]
+      timeout: 8
+    - ref: xenohooks.rescript.autofix
+      id: rescript-autofix
+      tools: [Write, Edit]
+      file_types: [res, resi]
+      timeout: 60

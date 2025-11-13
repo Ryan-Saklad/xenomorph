@@ -1,0 +1,17 @@
+llm/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Development
+.DS_Store
+
+# Xenohooks cache
+.cache/xenohooks/
