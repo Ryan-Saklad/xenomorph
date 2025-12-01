@@ -105,6 +105,8 @@ def run(payload: dict[str, Any]) -> Action:
         ".pytest_cache/",
         ".venv/",
         "venv/",
+        "tests/",  # Skip test files - B101 (assert_used) is expected in pytest
+        "test_",   # Also skip test_*.py files not in tests/ dir
     ]
     def _skip(p: str) -> bool:
         ps = p.replace("\\", "/")
